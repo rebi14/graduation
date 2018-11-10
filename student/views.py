@@ -1,24 +1,55 @@
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
-from student.models import Student, StudentCourse, Lecture, Teacher, CourseTeacher, Course, Attendance
-from django.views import generic
-import datetime
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
 from django.core.files.storage import FileSystemStorage
-
-
+from django.contrib.auth import login
+from django.shortcuts import redirect
+from django.views.generic.edit import CreateView
+from django.views.generic.base import TemplateView
+from student.forms import StudentSignUpForm, TeacherSignUpForm
+from student.models import MyUser
 # Create your views here.
 
 
-def index(request):
-    context = {
-        'deneme': 3,
-    }
+class StudentSignUpView(CreateView):
+    model = MyUser
+    form_class = StudentSignUpForm
+    template_name = 'registration/signup_form.html'
 
-    return render(request, 'index.html', context=context)
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'student'
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('index.html')
+
+
+class TeacherSignUpView(CreateView):
+    model = MyUser
+    form_class = TeacherSignUpForm
+    template_name = 'registration/signup_form.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'teacher'
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('index.html')
+
+
+class SignUpView(TemplateView):
+    template_name = 'registration/signup.html'
+
+
+def index(request):
+
+    return render(request, 'index.html')
 
 
 def upload_image(request):

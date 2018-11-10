@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
+from student import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,12 +24,16 @@ urlpatterns = [
 
 
 urlpatterns += [
-    path('student/', include('student.urls'))
-]
+    path('', include('student.urls')),
 
+]
 
 urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/signup/', views.SignUpView.as_view(), name='signup'),
+    path('accounts/signup/student/', views.StudentSignUpView.as_view(), name='student_signup'),
+    path('accounts/signup/teacher/', views.TeacherSignUpView.as_view(), name='teacher_signup'),
 ]
+
 
 

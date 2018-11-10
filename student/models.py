@@ -1,14 +1,35 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+
+
+class MyUser(AbstractUser):
+    is_student = models.BooleanField('student status', default=False)
+    is_teacher = models.BooleanField('teacher status', default=False)
 
 
 class Student(models.Model):
-    student_no = models.CharField(primary_key=True, max_length=9, help_text="student number")
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)
+    student_no = models.CharField(unique=True, max_length=9, help_text="student number")
     student_name = models.CharField(max_length=50, help_text="student name")
     student_surname = models.CharField(max_length=50, help_text="student surname")
 
+    class Meta:
+        permissions = (("can_upload_photo", "Upload Photo Permission"),)
+
     def __str__(self):
         return self.student_no
+
+
+class Teacher(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)
+    teacher_no = models.CharField(unique=True, max_length=9, help_text="teacher id")
+    teacher_name = models.CharField(max_length=50, help_text="teacher name")
+    teacher_surname = models.CharField(max_length=50, help_text="teacher surname")
+
+    def __str__(self):
+        return f"{self.teacher_name} {self.teacher_surname}"
 
 
 class StudentCourse(models.Model):
@@ -17,15 +38,6 @@ class StudentCourse(models.Model):
 
     def __str__(self):
         return self.student_no
-
-
-class Teacher(models.Model):
-    teacher_no = models.CharField(primary_key=True, max_length=9, help_text="teacher id")
-    teacher_name = models.CharField(max_length=50, help_text="teacher name")
-    teacher_surname = models.CharField(max_length=50, help_text="teacher surname")
-
-    def __str__(self):
-        return f"{self.teacher_name} {self.teacher_surname}"
 
 
 class CourseTeacher(models.Model):

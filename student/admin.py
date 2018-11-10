@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from student.models import Student, Teacher, Attendance, Course, StudentCourse, CourseTeacher, Lecture
+from student.models import Student, Teacher, Attendance, Course, StudentCourse, CourseTeacher, Lecture, MyUser
 
 
 # Register your models here.
@@ -41,4 +41,9 @@ class CourseTeacherAdmin(admin.ModelAdmin):
 @admin.register(Lecture)
 class LectureAdmin(admin.ModelAdmin):
     model = Lecture
-    list_display = ['course_id', 'lecture_crn','teacher_no']
+    list_display = ['course_id', 'lecture_crn', 'teacher_no']
+
+
+@admin.register(MyUser)
+class UserAdmin(admin.ModelAdmin):
+    model = MyUser
