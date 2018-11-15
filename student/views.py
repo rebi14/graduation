@@ -9,7 +9,9 @@ from django.shortcuts import redirect
 from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
 from student.forms import StudentSignUpForm, TeacherSignUpForm
-from student.models import MyUser
+from student.models import *
+from django.views import generic
+
 # Create your views here.
 
 
@@ -25,7 +27,7 @@ class StudentSignUpView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('index.html')
+        return redirect('/')
 
 
 class TeacherSignUpView(CreateView):
@@ -40,7 +42,7 @@ class TeacherSignUpView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('index.html')
+        return redirect('/')
 
 
 class SignUpView(TemplateView):
@@ -64,6 +66,14 @@ def upload_image(request):
         })
     return render(request, 'student/image_upload.html')
 
+
+class GetAllCourse(LoginRequiredMixin, generic.ListView):
+
+    model = Lecture
+    template_name = "student/all_lecture.html"
+
+    def get_queryset(self):
+        return Lecture.objects.all()
 
 
 

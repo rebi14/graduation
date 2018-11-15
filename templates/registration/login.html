@@ -19,8 +19,9 @@
       <form method="post" novalidate>
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
-        {{ form.username }}
-        {{ form.password }}
+        Username : {{ form.username }}
+        Password : {{ form.password }}
+        <br></br>
         <button type="submit" class="btn btn-primary">Log in</button>
       </form>
     </div>

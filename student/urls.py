@@ -15,3 +15,8 @@ urlpatterns = [
 #     path('accounts/signup/student/', views.StudentSignUpView.as_view(), name='student_signup'),
 #     path('accounts/signup/teacher/', views.TeacherSignUpView.as_view(), name='teacher_signup'),
 # ]
+
+
+urlpatterns += [
+    path('all-lectures',views.GetAllCourse.as_view(), name='all-lectures'),
+]

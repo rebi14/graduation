@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
-from student.models import MyUser
+from student.models import MyUser,Student
 
 
 class ImageUploadForm(forms.Form):
@@ -19,6 +19,7 @@ class StudentSignUpForm(UserCreationForm):
     def save(self):
         user = super().save(commit=False)
         user.is_student = True
+        Student.student_no = user.username
         user.save()
         return user
 

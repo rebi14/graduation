@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block all_lecture %}
+
+    {% if lecture_list %}
+    <ul>
+
+      {% for lecture in lecture_list %}
+      <li>
+        <p>{{ lecture.lecture_crn }} + {{ lecture.lecture_day }} + {{ lecture.course_id }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% else %}
+      <p>There are no books borrowed.</p>
+    {% endif %}
+{% endblock %}
