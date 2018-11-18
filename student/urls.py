@@ -18,5 +18,6 @@ urlpatterns = [
 
 
 urlpatterns += [
-    path('all-lectures',views.GetAllCourse.as_view(), name='all-lectures'),
+    path('all-lectures', views.GetAllCourse.as_view(), name='all-lectures'),
+    path('student-course', views.GetStudentCourse.as_view(), name='student-course')
 ]

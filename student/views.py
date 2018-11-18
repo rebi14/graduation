@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth import login
 from django.shortcuts import redirect
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.base import TemplateView
 from student.forms import StudentSignUpForm, TeacherSignUpForm
 from student.models import *
@@ -26,7 +26,7 @@ class StudentSignUpView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        login(self.request, user)
+#        login(self.request, user)
         return redirect('/')
 
 
@@ -41,7 +41,7 @@ class TeacherSignUpView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        login(self.request, user)
+        #login(self.request, user)
         return redirect('/')
 
 
@@ -76,6 +76,18 @@ class GetAllCourse(LoginRequiredMixin, generic.ListView):
         return Lecture.objects.all()
 
 
+class GetStudentCourse(LoginRequiredMixin, generic.ListView):
+    model = StudentCourse
+    template_name = "student/student_course.html"
+
+    def get_queryset(self):
+        return StudentCourse.objects.filter(student_no=self.request.user.username)
+
+
+class StudentCourseUpdate(UpdateView):
+
+    model = StudentCourse
+    fields = ('student_no', 'course_id')
 
 
 

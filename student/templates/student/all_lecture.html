@@ -3,15 +3,24 @@
 {% block all_lecture %}
 
     {% if lecture_list %}
-    <ul>
-
-      {% for lecture in lecture_list %}
-      <li>
-        <p>{{ lecture.lecture_crn }} + {{ lecture.lecture_day }} + {{ lecture.course_id }}</p>
-      </li>
-      {% endfor %}
-    </ul>
-
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Course Name</th>
+            <th scope="col">CRN</th>
+            <th scope="col">Day</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for lecture in lecture_list %}
+          <tr>
+            <td> {{ lecture.course_id }}</td>
+            <td> {{ lecture.lecture_crn }}</td>
+            <td> {{  lecture.lecture_day }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
     {% else %}
       <p>There are no books borrowed.</p>
     {% endif %}

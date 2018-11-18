@@ -37,7 +37,7 @@ class StudentCourse(models.Model):
     course_id = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return self.student_no
+        return str(self.student_no)
 
 
 class CourseTeacher(models.Model):
