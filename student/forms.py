@@ -1,14 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
-from student.models import MyUser, Student, Teacher
-
-
-class ImageUploadForm(forms.Form):
-    """Image upload form."""
-    title = forms.CharField(max_length=50)
-    image = forms.ImageField()
-
+from student.models import MyUser, Student, Teacher, Lecture, StudentCourse
+from django.forms import ModelForm
+from django.forms import *
 
 class StudentSignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -47,3 +42,19 @@ class TeacherSignUpForm(UserCreationForm):
 
         return user
 
+
+class EnrollLectureForm(ModelForm):
+
+    class Meta:
+
+        model = StudentCourse
+        fields = ('lecture_table', )
+        labels = {
+            'lecture_table': 'Lecture CRN  ',
+        }
+        # help_texts = {
+        #     'lecture_table': '',
+        # }
+        widgets = {
+            'lecture_table': Select(attrs={'class': 'form-control'})
+            }

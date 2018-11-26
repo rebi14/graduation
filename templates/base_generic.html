@@ -16,7 +16,7 @@
             </div>
             <div class="col-6 text-right">
               {% if user.is_authenticated %}
-                <p class="pt-3">Logged in as <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}">Log out</a>.</p>
+                <p class="pt-3">Logged in as <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}" class="btn btn-danger" role="button">Log out</a></p>
               {% else %}
                 <a href="{% url 'login' %}" class="btn btn-light" role="button">Log in</a>
                 <a href="{% url 'signup' %}" class="btn btn-primary" role="button">Sign up</a>
@@ -38,9 +38,13 @@
         {%  if user.is_student %}
           <h3>Logged as a Student</h3>
           <a href="{% url 'all-lectures' %}" class="btn btn-info" role="button">All courses</a>
-          <a href="{% url 'student-course' %}" class="btn btn-info" role="button">Enrolled Course</a>
+          <a href="{% url 'student-lecture' %}" class="btn btn-info" role="button">Enrolled Course</a>
+          <a href="{% url 'lecture-enrolment' %}" class="btn btn-info" role="button">Enrolment</a>
           {% block all_lecture %}{% endblock %}
+          <br>
           {% block student_course %} {% endblock %}
+          <br>
+          {% block lectureEnrolment %}{% endblock %}
 
         {% endif %}
       </div>

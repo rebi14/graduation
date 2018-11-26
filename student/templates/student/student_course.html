@@ -1,8 +1,28 @@
 {% extends "base_generic.html" %}
 
 {% block student_course %}
-  {% for i in studentcourse_list %}
-    <p> asdas</p>
-  {% endfor %}
-
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Course Name</th>
+          <th scope="col">CRN</th>
+          <th scope="col">Day</th>
+          <th scope="col">Time</th>
+          <th scope="col">Teacher</th>
+          </tr>
+      </thead>
+      <tbody>
+        {% for studentCourse in student_courses %}
+          {% if user.username == studentCourse.student_table.student_no %}
+            <tr>
+              <td>{{ studentCourse.lecture_table.course_id.course_name }}</td>
+              <td>{{ studentCourse.lecture_table.lecture_crn }}</td>
+              <td>{{ studentCourse.lecture_table.lecture_day }}</td>
+              <td>{{ studentCourse.lecture_table.start_time }} - {{ studentCourse.lecture_table.end_time }}</td>
+              <td>{{ studentCourse.lecture_table.teacher_no }}</td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
 {% endblock %}

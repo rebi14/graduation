@@ -1,4 +1,3 @@
-from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
@@ -8,7 +7,7 @@ from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.base import TemplateView
-from student.forms import StudentSignUpForm, TeacherSignUpForm
+from student.forms import StudentSignUpForm, TeacherSignUpForm, EnrollLectureForm
 from student.models import *
 from django.views import generic
 
@@ -45,6 +44,34 @@ class TeacherSignUpView(CreateView):
         return redirect('/')
 
 
+class LectureEnrollmentView(CreateView):
+    model = StudentCourse
+    form_class = EnrollLectureForm
+    template_name = 'student/enrolment.html'
+
+    def get_object(self, queryset=None):
+        obj, created = StudentCourse.objects.get_or_create(col_1=self.kwargs['value_1'], col_2=self.kwargs['value_2'])
+        return obj
+
+
+def enrolment(request):
+    if request.method == 'POST':
+        form = EnrollLectureForm(request.POST)
+        if form.is_valid():
+            a = form.save(commit=False)
+            lec = Lecture.objects.get(lecture_crn=a.lecture_table.lecture_crn)
+            stu = Student.objects.get(student_no=request.user.username)
+            Lecture.objects.get(lecture_crn=a.lecture_table.lecture_crn)
+            if StudentCourse.objects.filter(student_table=stu, lecture_table=lec).exists():
+                return render(request, 'index.html')
+            else:
+                StudentCourse.objects.create(lecture_table=lec, student_table=stu)
+                redirect('/')
+    else:
+        form = EnrollLectureForm()
+    return render(request, 'student/enrolment.html', {'form': form})
+
+
 class SignUpView(TemplateView):
     template_name = 'registration/signup.html'
 
@@ -76,19 +103,22 @@ class GetAllCourse(LoginRequiredMixin, generic.ListView):
         return Lecture.objects.all()
 
 
-class GetStudentCourse(LoginRequiredMixin, generic.ListView):
-    model = StudentCourse
+class GetStudentLecture(LoginRequiredMixin, generic.ListView):
+
+    model = Lecture
     template_name = "student/student_course.html"
+    # context_object_name = 'student_lecture_list'
 
     def get_queryset(self):
-        return StudentCourse.objects.filter(student_no=self.request.user.username)
+        #return Lecture.objects.select_related('course_id')
+
+        return Lecture.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(GetStudentLecture, self).get_context_data(**kwargs)
+        context['student_courses'] = StudentCourse.objects.all()
+        return context
 
 
-class StudentCourseUpdate(UpdateView):
-
-    model = StudentCourse
-    fields = ('student_no', 'course_id')
-
-
-
-
+class CourseCreate(LoginRequiredMixin, CreateView):
+    pass

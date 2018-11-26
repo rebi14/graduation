@@ -9,6 +9,9 @@
             <th scope="col">Course Name</th>
             <th scope="col">CRN</th>
             <th scope="col">Day</th>
+            <th scope="col">Time</th>
+            <th scope="col">Teacher</th>
+
           </tr>
         </thead>
         <tbody>
@@ -16,12 +19,12 @@
           <tr>
             <td> {{ lecture.course_id }}</td>
             <td> {{ lecture.lecture_crn }}</td>
-            <td> {{  lecture.lecture_day }}</td>
+            <td> {{ lecture.lecture_day }}</td>
+            <td> {{ lecture.start_time }} - {{ lecture.end_time }}</td>
+            <td> {{ lecture.teacher_no}}</td>
           </tr>
         {% endfor %}
         </tbody>
       </table>
-    {% else %}
-      <p>There are no books borrowed.</p>
     {% endif %}
 {% endblock %}
