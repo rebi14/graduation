@@ -121,4 +121,7 @@ class GetStudentLecture(LoginRequiredMixin, generic.ListView):
 
 
 class CourseCreate(LoginRequiredMixin, CreateView):
+
+
+
     pass
