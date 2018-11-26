@@ -25,7 +25,7 @@ SECRET_KEY = '^3wn(@f^-3iu+1zhmj3pn-u9luvl=vud9kq_s9uw_j42!*!&)@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]','192.168.0.30']
 
 
 # Application definition
@@ -123,9 +123,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/'
+#LOGIN_REDIRECT_URL = '/'
 
+AUTH_USER_MODEL = "student.MyUser"
+LOGIN_URL = 'login'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+LOGOUT_URL = 'logout'
+
+LOGIN_REDIRECT_URL = 'index'
+
+LOGOUT_REDIRECT_URL = 'index'
 

@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block all_lecture %}
+
+    {% if lecture_list %}
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Course Name</th>
+            <th scope="col">CRN</th>
+            <th scope="col">Day</th>
+            <th scope="col">Time</th>
+            <th scope="col">Teacher</th>
+
+          </tr>
+        </thead>
+        <tbody>
+        {% for lecture in lecture_list %}
+          <tr>
+            <td> {{ lecture.course_id }}</td>
+            <td> {{ lecture.lecture_crn }}</td>
+            <td> {{ lecture.lecture_day }}</td>
+            <td> {{ lecture.start_time }} - {{ lecture.end_time }}</td>
+            <td> {{ lecture.teacher_no}}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+{% endblock %}
