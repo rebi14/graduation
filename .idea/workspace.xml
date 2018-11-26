@@ -313,9 +313,9 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Django server.graduation" />
       <item itemvalue="Python.__init__" />
       <item itemvalue="Python.urls" />
+      <item itemvalue="Django server.graduation" />
     </list>
     <recent_temporary>
       <list>
@@ -342,6 +342,15 @@
   </component>
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="36749000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
   </component>
   <component name="ToolWindowManager">
     <frame x="61" y="27" width="1859" height="1053" extended-state="6" />
