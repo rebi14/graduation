@@ -1,0 +1,10 @@
+{% extends 'base_generic.html' %}
+
+{% block lecture_students %}
+
+  {% for i in studentcourse_list %}
+    <p>{{ i.student_table.student_no }}  {{ i.student_table.student_name }}  {{ i.student_table.student_surname }}</p>
+  {% endfor %}
+
+
+{% endblock %}

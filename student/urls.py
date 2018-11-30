@@ -20,7 +20,9 @@ urlpatterns = [
 urlpatterns += [
     path('all-lectures', views.GetAllCourse.as_view(), name='all-lectures'),
     path('student-lecture', views.GetStudentLecture.as_view(), name='student-lecture'),
-    #path('enrolment', views.LectureEnrollmentView.as_view(), name='lecture-enrolment'),
     path('enrolment', views.enrolment, name='lecture-enrolment'),
-
+    path('create-lecture', views.CreateLecture.as_view(), name='create-lecture'),
+    path('teacher-lectures', views.GetTeacherLecture.as_view(), name='teacher-lecture'),
+    path('lecture-detail/<int:pk>', views.GetLectureStudentList.as_view(), name='lecture-detail'),
+    path('studentcourse/<int:pk>', views.StudentCourseDetail.as_view(), name='studentcourse'),
 ]

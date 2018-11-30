@@ -58,3 +58,28 @@ class EnrollLectureForm(ModelForm):
         widgets = {
             'lecture_table': Select(attrs={'class': 'form-control'})
             }
+
+
+class CreateLectureForm(ModelForm):
+
+    class Meta:
+        model = Lecture
+        exclude = ('teacher_no',)
+        labels = {
+            'course_id': 'Course Code',
+            'lecture_crn': 'Lecture CRN  ',
+            'lecture_day': 'Lecture Day',
+            'teacher_no': 'Course Teacher',
+
+        }
+        help_texts = {
+            'lecture_crn': '',
+        }
+        widgets = {
+            'course_id': Select(attrs={'class': 'form-control'}),
+            'lecture_crn': TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter CRN'}),
+            'lecture_day': Select(attrs={'class': 'form-control'}),
+            'teacher_no': Select(attrs={'class': 'form-control'}),
+            'start_time': DateTimeInput(attrs={'class': 'form-control'}),
+            'end_time': DateTimeInput(attrs={'class': 'form-control'})
+        }

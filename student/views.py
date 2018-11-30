@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
@@ -5,9 +7,10 @@ from django.urls import reverse_lazy
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth import login
 from django.shortcuts import redirect
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.base import TemplateView
-from student.forms import StudentSignUpForm, TeacherSignUpForm, EnrollLectureForm
+from student.forms import StudentSignUpForm, TeacherSignUpForm, EnrollLectureForm, CreateLectureForm
 from student.models import *
 from django.views import generic
 
@@ -42,16 +45,6 @@ class TeacherSignUpView(CreateView):
         user = form.save()
         #login(self.request, user)
         return redirect('/')
-
-
-class LectureEnrollmentView(CreateView):
-    model = StudentCourse
-    form_class = EnrollLectureForm
-    template_name = 'student/enrolment.html'
-
-    def get_object(self, queryset=None):
-        obj, created = StudentCourse.objects.get_or_create(col_1=self.kwargs['value_1'], col_2=self.kwargs['value_2'])
-        return obj
 
 
 def enrolment(request):
@@ -120,8 +113,70 @@ class GetStudentLecture(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class CourseCreate(LoginRequiredMixin, CreateView):
+class CreateLecture(LoginRequiredMixin, CreateView):
+
+    model = Lecture
+    template_name = "teacher/create_lecture.html"
+    success_url = '/'
+    form_class = CreateLectureForm
+
+    def form_valid(self, form):
+        teacher = Teacher.objects.get(teacher_no=self.request.user.username)
+        form.instance.teacher_no = teacher
+        return super().form_valid(form)
+
+    # def get_absolute_url(self):
+    #     return '/'
 
 
+class GetTeacherLecture(LoginRequiredMixin, ListView):
+    model = Lecture
+    template_name = 'teacher/teacher_lecture.html'
 
-    pass
+    def get_queryset(self):
+        teacher = Teacher.objects.get(teacher_no=self.request.user.username)
+        return Lecture.objects.filter(teacher_no=teacher)
+
+
+class GetLectureStudentList(LoginRequiredMixin, ListView):
+    model = StudentCourse
+    template_name = 'teacher/lecture_detail.html'
+    print("\n")
+    print("\n")
+
+    def get_queryset(self):
+        print(self.request.path)
+        a = self.request.path
+        print(type(a))
+        crn = re.findall(r'[0-9].*', a)
+        lec = Lecture.objects.get(lecture_crn=crn[0])
+        return StudentCourse.objects.filter(lecture_table=lec)
+
+    # def get_queryset(self):
+    #     return StudentCourse.objects.raw("SELECT student_table_id FROM student_studentcourse where lecture_table_id=10000;")
+    # def get_queryset(self):
+    #     return StudentCourse.objects.filter()
+
+    # template_name = 'teacher/lecture_detail.html'
+
+    # def get_queryset(self):
+    #     teacher = Teacher.objects.get(teacher_no=self.request.user.username)
+    #     lecture = Lecture.objects.filter(teacher_no=teacher)
+    #
+    #
+    #     crn = re.findall(r'[0-9].*', )
+    #
+    #     print(lecture[0].lecture_crn)
+    #     print("\n")
+    #     print(StudentCourse.objects.filter(lecture_table=lecture[0]))
+    #     print("\n")
+    #     print(lecture[0].get_absolute_url())
+    #     print("\n")
+    #     return StudentCourse.objects.filter(lecture_table=lecture[0])
+
+class StudentCourseDetail(LoginRequiredMixin, DetailView):
+    model = StudentCourse
+    template_name = 'teacher/studentcourse_detail.html'
+
+    def get_queryset(self):
+        return StudentCourse.objects.raw("SELECT student_table_id FROM student_studentcourse where lecture_table_id=10000;")

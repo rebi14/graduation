@@ -12,7 +12,7 @@
         <div class="col-md-10 col-sm-12">
           <div class="row">
             <div class="col-6">
-              <a href="{% url 'index' %}"> <h1>ITU Attendance Application</h1> </a>
+              <a href="{% url 'index' %}" style="color: black"> <h1>ITU Attendance Application</h1> </a>
             </div>
             <div class="col-6 text-right">
               {% if user.is_authenticated %}
@@ -36,7 +36,7 @@
     <div class="container">
       <div>
         {%  if user.is_student %}
-          <h3>Logged as a Student</h3>
+          <h3>Logged in as a Student</h3>
           <a href="{% url 'all-lectures' %}" class="btn btn-info" role="button">All courses</a>
           <a href="{% url 'student-lecture' %}" class="btn btn-info" role="button">Enrolled Course</a>
           <a href="{% url 'lecture-enrolment' %}" class="btn btn-info" role="button">Enrolment</a>
@@ -45,6 +45,20 @@
           {% block student_course %} {% endblock %}
           <br>
           {% block lectureEnrolment %}{% endblock %}
+
+        {% endif %}
+        {% if user.is_teacher %}
+          <h3>Logged in as a Teacher</h3>
+          <a href="{% url 'all-lectures' %}" class="btn btn-info" role="button">All courses</a>
+          <a href="{% url 'teacher-lecture' %}" class="btn btn-info" role="button">My Lectures</a>
+          <a href="{% url 'create-lecture' %}" class="btn btn-info" role="button">Create Lecture</a>
+
+
+          {% block create_lecture %} {% endblock %}
+          {% block teacher_lectures %} {% endblock %}
+          {% block lecture_students %} {% endblock %}
+
+
 
         {% endif %}
       </div>
