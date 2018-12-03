@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 import datetime
-
 from django.urls import reverse
 
 
@@ -52,18 +51,17 @@ class CourseTeacher(models.Model):
         return reverse('lecture-detail', args=[str(self.lecture_table)])
 
 
-
 class Lecture(models.Model):
     CHOICES = (
-        (0, 'Monday'),
-        (1, 'Tuesday'),
-        (2, 'Wednesday'),
-        (3, 'Thursday'),
-        (4, 'Friday'),
+        ('MON.', 'Monday'),
+        ('TUES.', 'Tuesday'),
+        ('WED.', 'Wednesday'),
+        ('THU.', 'Thursday'),
+        ('FRI.', 'Friday'),
     )
-    #lecture_id = models.AutoField(primary_key=True)
+
     lecture_crn = models.CharField(primary_key=True, max_length=5, help_text="section crn")
-    lecture_day = models.IntegerField(choices=CHOICES)
+    lecture_day = models.CharField(choices=CHOICES, max_length=10)
     course_id = models.ForeignKey('Course', on_delete=models.SET_NULL, null=True, blank=True)
     teacher_no = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, blank=True)
     start_time = models.TimeField(default=datetime.time(8, 30), null=False, blank=False)

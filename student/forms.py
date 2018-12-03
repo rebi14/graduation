@@ -48,7 +48,7 @@ class EnrollLectureForm(ModelForm):
     class Meta:
 
         model = StudentCourse
-        fields = ('lecture_table', )
+        fields = ('lecture_table',)
         labels = {
             'lecture_table': 'Lecture CRN  ',
         }
@@ -58,6 +58,10 @@ class EnrollLectureForm(ModelForm):
         widgets = {
             'lecture_table': Select(attrs={'class': 'form-control'})
             }
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['lecture_table'].queryset = StudentCourse.objects.none()
 
 
 class CreateLectureForm(ModelForm):
@@ -83,3 +87,4 @@ class CreateLectureForm(ModelForm):
             'start_time': DateTimeInput(attrs={'class': 'form-control'}),
             'end_time': DateTimeInput(attrs={'class': 'form-control'})
         }
+

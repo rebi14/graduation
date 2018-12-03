@@ -1,18 +1,18 @@
 import re
-
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404
 from django.shortcuts import render
-from django.urls import reverse_lazy
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth import login
 from django.shortcuts import redirect
-from django.views.generic import ListView, DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import ListView
+from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
 from student.forms import StudentSignUpForm, TeacherSignUpForm, EnrollLectureForm, CreateLectureForm
 from student.models import *
 from django.views import generic
+from django.contrib import messages
+
 
 # Create your views here.
 
@@ -52,16 +52,29 @@ def enrolment(request):
         form = EnrollLectureForm(request.POST)
         if form.is_valid():
             a = form.save(commit=False)
+
+            try:
+                Lecture.objects.get(lecture_crn=a.lecture_table.lecture_crn)
+            except (ObjectDoesNotExist, AttributeError):
+                raise Http404("aaa")
+
             lec = Lecture.objects.get(lecture_crn=a.lecture_table.lecture_crn)
             stu = Student.objects.get(student_no=request.user.username)
-            Lecture.objects.get(lecture_crn=a.lecture_table.lecture_crn)
-            if StudentCourse.objects.filter(student_table=stu, lecture_table=lec).exists():
-                return render(request, 'index.html')
+
+            enrolled_course = StudentCourse.objects.filter(student_table=stu)
+            enrolled_course_id_list = list()
+            for i in enrolled_course:
+                enrolled_course_id_list.append(str(i.lecture_table.course_id))
+
+            if str(lec.course_id) in enrolled_course_id_list:
+                messages.add_message(request, messages.INFO, f'{lec.course_id} kodlu derse kaydınız vardır.')
+                return render(request, 'student/enrolment.html', {'form': form, 'some_flag': True})
             else:
                 StudentCourse.objects.create(lecture_table=lec, student_table=stu)
-                redirect('/')
+                return redirect('student-lecture')
     else:
         form = EnrollLectureForm()
+
     return render(request, 'student/enrolment.html', {'form': form})
 
 
@@ -72,19 +85,6 @@ class SignUpView(TemplateView):
 def index(request):
 
     return render(request, 'index.html')
-
-
-def upload_image(request):
-    if request.method == 'POST' and request.FILES['file']:
-
-        file = request.FILES['file']
-        fs = FileSystemStorage()
-        filename = fs.save(file.name, file)
-        uploaded_file_url = fs.url(filename)
-        return render(request, 'student/image_upload.html', {
-            'uploaded_file_url': uploaded_file_url
-        })
-    return render(request, 'student/image_upload.html')
 
 
 class GetAllCourse(LoginRequiredMixin, generic.ListView):
@@ -103,8 +103,6 @@ class GetStudentLecture(LoginRequiredMixin, generic.ListView):
     # context_object_name = 'student_lecture_list'
 
     def get_queryset(self):
-        #return Lecture.objects.select_related('course_id')
-
         return Lecture.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -125,9 +123,6 @@ class CreateLecture(LoginRequiredMixin, CreateView):
         form.instance.teacher_no = teacher
         return super().form_valid(form)
 
-    # def get_absolute_url(self):
-    #     return '/'
-
 
 class GetTeacherLecture(LoginRequiredMixin, ListView):
     model = Lecture
@@ -141,8 +136,6 @@ class GetTeacherLecture(LoginRequiredMixin, ListView):
 class GetLectureStudentList(LoginRequiredMixin, ListView):
     model = StudentCourse
     template_name = 'teacher/lecture_detail.html'
-    print("\n")
-    print("\n")
 
     def get_queryset(self):
         print(self.request.path)
@@ -152,31 +145,19 @@ class GetLectureStudentList(LoginRequiredMixin, ListView):
         lec = Lecture.objects.get(lecture_crn=crn[0])
         return StudentCourse.objects.filter(lecture_table=lec)
 
-    # def get_queryset(self):
-    #     return StudentCourse.objects.raw("SELECT student_table_id FROM student_studentcourse where lecture_table_id=10000;")
-    # def get_queryset(self):
-    #     return StudentCourse.objects.filter()
 
-    # template_name = 'teacher/lecture_detail.html'
+def upload_image(request):
 
-    # def get_queryset(self):
-    #     teacher = Teacher.objects.get(teacher_no=self.request.user.username)
-    #     lecture = Lecture.objects.filter(teacher_no=teacher)
-    #
-    #
-    #     crn = re.findall(r'[0-9].*', )
-    #
-    #     print(lecture[0].lecture_crn)
-    #     print("\n")
-    #     print(StudentCourse.objects.filter(lecture_table=lecture[0]))
-    #     print("\n")
-    #     print(lecture[0].get_absolute_url())
-    #     print("\n")
-    #     return StudentCourse.objects.filter(lecture_table=lecture[0])
+    if request.method == 'POST' and request.FILES['myfile']:
+        username = request.user.username
+        myfile = request.FILES['myfile']
+        myfile.name = str(username)+".jpg"
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
+        fs.url(filename)
+        return render(request, 'student/upload_photo.html')
 
-class StudentCourseDetail(LoginRequiredMixin, DetailView):
-    model = StudentCourse
-    template_name = 'teacher/studentcourse_detail.html'
+    return render(request, 'student/upload_photo.html')
 
-    def get_queryset(self):
-        return StudentCourse.objects.raw("SELECT student_table_id FROM student_studentcourse where lecture_table_id=10000;")
+
+
