@@ -1,14 +1,15 @@
 import re
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
-from django.shortcuts import render
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import render, render_to_response
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, ModelFormMixin
 from django.views.generic.base import TemplateView
-from student.forms import StudentSignUpForm, TeacherSignUpForm, EnrollLectureForm, CreateLectureForm
+from student.forms import StudentSignUpForm, TeacherSignUpForm, EnrollLectureForm, CreateLectureForm, StudentPhotoForm, \
+    ClassPhotoForm
 from student.models import *
 from django.views import generic
 from django.contrib import messages
@@ -96,6 +97,15 @@ class GetAllCourse(LoginRequiredMixin, generic.ListView):
         return Lecture.objects.all()
 
 
+class GetAllCourse2(LoginRequiredMixin, generic.ListView):
+
+    model = Lecture
+    template_name = "teacher/all_lecture2.html"
+
+    def get_queryset(self):
+        return Lecture.objects.all()
+
+
 class GetStudentLecture(LoginRequiredMixin, generic.ListView):
 
     model = Lecture
@@ -138,26 +148,51 @@ class GetLectureStudentList(LoginRequiredMixin, ListView):
     template_name = 'teacher/lecture_detail.html'
 
     def get_queryset(self):
-        print(self.request.path)
         a = self.request.path
-        print(type(a))
         crn = re.findall(r'[0-9].*', a)
         lec = Lecture.objects.get(lecture_crn=crn[0])
         return StudentCourse.objects.filter(lecture_table=lec)
 
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST' and request.FILES['myfile']:
+            a = self.request.path
+            crn = re.findall(r'[0-9].*', a)
+            myfile = request.FILES['myfile']
+            myfile.name = str(crn[0]) + ".jpg"
+            fs = FileSystemStorage()
+            filename = fs.save(myfile.name, myfile)
+            fs.url(filename)
+            return redirect(self.request.path)
+        return redirect(self.request.path)
 
-def upload_image(request):
 
-    if request.method == 'POST' and request.FILES['myfile']:
-        username = request.user.username
-        myfile = request.FILES['myfile']
-        myfile.name = str(username)+".jpg"
-        fs = FileSystemStorage()
-        filename = fs.save(myfile.name, myfile)
-        fs.url(filename)
-        return render(request, 'student/upload_photo.html')
+def student_photo_upload(request):
+    if request.method == 'POST':
+        form = StudentPhotoForm(request.POST, request.FILES)
+        print(request.FILES['document'].name)
+        request.FILES['document'].name = str(request.user.username) + ".jpg"
+        if form.is_valid():
+            form.save()
+            return render(request, 'student/student_photo_upload.html', {'form': form})
+    else:
+        form = StudentPhotoForm()
+    return render(request, 'student/student_photo_upload.html', {'form': form})
 
-    return render(request, 'student/upload_photo.html')
+
+def class_photo_upload(request):
+    print("request get :  " + str(request.GET.get('crn')))
+    if request.method == 'POST':
+        form = ClassPhotoForm(request.POST, request.FILES)
+        request.FILES['document'].name = str(request.user.username) + ".jpg"
+        if form.is_valid():
+            form.save()
+            return render(request, 'teacher/class_photo_upload.html', {'form': form})
+
+    else:
+        form = ClassPhotoForm()
+    return render(request, 'teacher/class_photo_upload.html', {'form': form})
+
+
 
 
 

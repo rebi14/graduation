@@ -42,27 +42,29 @@
           <a href="{% url 'student-lecture' %}" class="btn btn-info" role="button">Enrolled Course</a>
           <a href="{% url 'lecture-enrolment' %}" class="btn btn-info" role="button">Enrolment</a>
           <a href="{% url 'upload-photo' %}" class="btn btn-info" role="button">Photo Upload</a>
+
+
           {% block all_lecture %}{% endblock %}
           <br>
           {% block student_course %}{% endblock %}
           <br>
           {% block lectureEnrolment %}{% endblock %}
           <br>
-          {% block upload_photo %}{% endblock %}
+          {% block model_form %}{% endblock %}
+
 
         {% endif %}
         {% if user.is_teacher %}
           <h3>Logged in as a Teacher</h3>
-          <a href="{% url 'all-lectures' %}" class="btn btn-info" role="button">All courses</a>
+          <a href="{% url 'all-lectures2' %}" class="btn btn-info" role="button">All courses</a>
           <a href="{% url 'teacher-lecture' %}" class="btn btn-info" role="button">My Lectures</a>
           <a href="{% url 'create-lecture' %}" class="btn btn-info" role="button">Create Lecture</a>
 
-
+          {% block all_lecture2 %}{% endblock %}
           {% block create_lecture %} {% endblock %}
           {% block teacher_lectures %} {% endblock %}
           {% block lecture_students %} {% endblock %}
-
-
+          {% block class_photo_upload %} {% endblock %}
 
         {% endif %}
       </div>

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
-from student.models import MyUser, Student, Teacher, Lecture, StudentCourse
+from student.models import MyUser, Student, Teacher, Lecture, StudentCourse, StudentPhoto, ClassPhoto
 from django.forms import ModelForm
 from django.forms import *
 
@@ -88,3 +88,14 @@ class CreateLectureForm(ModelForm):
             'end_time': DateTimeInput(attrs={'class': 'form-control'})
         }
 
+
+class StudentPhotoForm(ModelForm):
+    class Meta:
+        model = StudentPhoto
+        fields = ('document', )
+
+
+class ClassPhotoForm(ModelForm):
+    class Meta:
+        model = ClassPhoto
+        fields = ('document', )

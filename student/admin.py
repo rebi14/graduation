@@ -25,6 +25,7 @@ class CourseAdmin(admin.ModelAdmin):
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
     model = Attendance
+    list_display = ['student_id', 'lecture_crn', 'date_attended', 'inout']
 
 
 @admin.register(StudentCourse)

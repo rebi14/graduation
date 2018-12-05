@@ -91,3 +91,13 @@ class Attendance(models.Model):
     lecture_crn = models.ForeignKey('Lecture', on_delete=models.SET_NULL, null=True, blank=True)
     date_attended = models.DateField("date")
     inout = models.BooleanField("input")
+
+
+class StudentPhoto(models.Model):
+    document = models.ImageField(upload_to='studentPhotos/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+
+class ClassPhoto(models.Model):
+    document = models.ImageField(upload_to='classPhoto/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
