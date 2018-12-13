@@ -27,4 +27,6 @@ urlpatterns += [
     path('lecture-detail/crn=<int:pk>', views.GetLectureStudentList.as_view(), name='lecture-detail'),
     path('upload-photo', views.student_photo_upload, name='upload-photo'),
     path('class-photo-upload', views.class_photo_upload, name='class-photo-upload'),
+    path('attendance-list', views.AttendanceListView.as_view(), name='attendance-list'),
+    path('take-attendance', views.AttendanceView.as_view(), name='take-attendance')
 ]

@@ -10,6 +10,7 @@
     </thead>
     <tbody>
     {% for i in studentcourse_list %}
+      <tr>
         <td>{{ i.student_table.student_no }}</td>
         <td>{{ i.student_table.student_name.capitalize }} {{ i.student_table.student_surname.capitalize }}</td>
       </tr>
@@ -17,21 +18,10 @@
     </tbody>
   </table>
 
-{#   <form method="post" enctype="multipart/form-data">#}
-{#     {% csrf_token %}#}
-{#    <div class="form-group">#}
-{#       <input type="file" class="form-control-file" id="exampleFormControlFile1" name="myfile">#}
-{#       <button class="btn btn-primary" type="submit">Upload</button>#}
-{#    </div>#}
-{#  </form>#}
 
-
-
-  <a
-      class="btn btn-primary"
-      href="{% url 'class-photo-upload' %}">
-    upload photo
-  </a>
-    <button class="btn btn-primary" type="submit">Take Attendance</button>
+  <a class="btn btn-primary" href="{% url 'class-photo-upload' %}">upload photo</a>
+  <a class="btn btn-primary" href="{% url 'attendance-list' %}">Attendance List</a>
+  <a class="btn btn-primary" href="{% url 'take-attendance' %}">Take Attendance</a>
 
 {% endblock %}
+

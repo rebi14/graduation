@@ -1,13 +1,13 @@
 import re
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404
 from django.shortcuts import render, render_to_response
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView, ModelFormMixin
-from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.base import TemplateView, View
 from student.forms import StudentSignUpForm, TeacherSignUpForm, EnrollLectureForm, CreateLectureForm, StudentPhotoForm, \
     ClassPhotoForm
 from student.models import *
@@ -142,6 +142,15 @@ class GetTeacherLecture(LoginRequiredMixin, ListView):
         teacher = Teacher.objects.get(teacher_no=self.request.user.username)
         return Lecture.objects.filter(teacher_no=teacher)
 
+    # def get(self, request, *args, **kwargs):
+    #     lec = Lecture.objects.get(lecture_crn=self.request.session['crn'])
+    #     enrolled = len(StudentCourse.objects.filter(lecture_table=lec))
+    #     context = locals()
+    #     context['enrolled'] = enrolled
+    #     return render_to_response(self.template_name, context)
+
+
+
 
 class GetLectureStudentList(LoginRequiredMixin, ListView):
     model = StudentCourse
@@ -151,19 +160,8 @@ class GetLectureStudentList(LoginRequiredMixin, ListView):
         a = self.request.path
         crn = re.findall(r'[0-9].*', a)
         lec = Lecture.objects.get(lecture_crn=crn[0])
+        self.request.session['crn'] = crn[0]
         return StudentCourse.objects.filter(lecture_table=lec)
-
-    def post(self, request, *args, **kwargs):
-        if request.method == 'POST' and request.FILES['myfile']:
-            a = self.request.path
-            crn = re.findall(r'[0-9].*', a)
-            myfile = request.FILES['myfile']
-            myfile.name = str(crn[0]) + ".jpg"
-            fs = FileSystemStorage()
-            filename = fs.save(myfile.name, myfile)
-            fs.url(filename)
-            return redirect(self.request.path)
-        return redirect(self.request.path)
 
 
 def student_photo_upload(request):
@@ -180,10 +178,9 @@ def student_photo_upload(request):
 
 
 def class_photo_upload(request):
-    print("request get :  " + str(request.GET.get('crn')))
     if request.method == 'POST':
         form = ClassPhotoForm(request.POST, request.FILES)
-        request.FILES['document'].name = str(request.user.username) + ".jpg"
+        request.FILES['document'].name = str(request.session['crn']) + ".jpg"
         if form.is_valid():
             form.save()
             return render(request, 'teacher/class_photo_upload.html', {'form': form})
@@ -193,6 +190,40 @@ def class_photo_upload(request):
     return render(request, 'teacher/class_photo_upload.html', {'form': form})
 
 
+class AttendanceListView(LoginRequiredMixin, ListView):
+    model = Attendance
+    template_name = 'teacher/attendance_list.html'
+
+    def get_queryset(self):
+        lecture = Lecture.objects.get(lecture_crn=self.request.session['crn'])
+        return Attendance.objects.filter(lecture_crn=lecture)
 
 
+class AttendanceView(LoginRequiredMixin, View):
+    model = Attendance
+    template_name = "teacher/attendance_update.html"
 
+    def take_att(self):
+        crn = self.request.session['crn']
+        lecture = Lecture.objects.get(lecture_crn=crn)
+        student_courses = StudentCourse.objects.filter(lecture_table=lecture)
+        sinif_listesi = list()
+        for i in student_courses:
+            sinif_listesi.append(str(i.student_table.student_no))
+        olanlar = ['090120510', '050120478', 'student1']
+
+        for i in sinif_listesi:
+            if i in olanlar:
+                lec = Lecture.objects.get(lecture_crn=self.request.session['crn'])
+                stu = Student.objects.get(student_no=i)
+                Attendance.objects.create(student_id=stu, lecture_crn=lec,
+                                          date_attended=datetime.datetime.now(), inout=True)
+            else:
+                stu = Student.objects.get(student_no=i)
+                lec = Lecture.objects.get(lecture_crn=self.request.session['crn'])
+                Attendance.objects.create(student_id=stu, lecture_crn=lec,
+                                          date_attended=datetime.datetime.now(), inout=False)
+
+    def get(self, request):
+        self.take_att()
+        return render(request, 'teacher/attendance_update.html')

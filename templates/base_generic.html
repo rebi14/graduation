@@ -59,12 +59,15 @@
           <a href="{% url 'all-lectures2' %}" class="btn btn-info" role="button">All courses</a>
           <a href="{% url 'teacher-lecture' %}" class="btn btn-info" role="button">My Lectures</a>
           <a href="{% url 'create-lecture' %}" class="btn btn-info" role="button">Create Lecture</a>
+          <br><br>
 
           {% block all_lecture2 %}{% endblock %}
           {% block create_lecture %} {% endblock %}
           {% block teacher_lectures %} {% endblock %}
           {% block lecture_students %} {% endblock %}
           {% block class_photo_upload %} {% endblock %}
+          {% block attendance %} {% endblock %}
+          {% block attendance_update %} {% endblock %}
 
         {% endif %}
       </div>

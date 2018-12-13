@@ -92,6 +92,9 @@ class Attendance(models.Model):
     date_attended = models.DateField("date")
     inout = models.BooleanField("input")
 
+    def __str__(self):
+        return f"student: {self.student_id} crn: {self.lecture_crn}"
+
 
 class StudentPhoto(models.Model):
     document = models.ImageField(upload_to='studentPhotos/')
