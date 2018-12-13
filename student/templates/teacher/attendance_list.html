@@ -1,0 +1,31 @@
+{% extends 'base_generic.html' %}
+
+{% block attendance %}
+
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Student No</th>
+        <th scope="col">Student Name</th>
+        <th scope="col">Date</th>
+        <th scope="col">Attendance</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for i in attendance_list %}
+      <tr>
+        <td>{{ i.student_id.student_no }}</td>
+        <td>{{ i.student_id.student_name.capitalize }} {{ i.student_id.student_surname.capitalize }}</td>
+        <td>{{ i.date_attended }}</td>
+        {% if i.inout %}
+          <td>+</td>
+        {% else %}
+          <td>-</td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+
+{% endblock %}

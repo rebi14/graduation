@@ -1,18 +1,23 @@
 {% extends "base_generic.html" %}
 
 {% block lectureEnrolment %}
+
   <div class="col-md-5 col-sm-10">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
 
-  <form method="post" novalidate>
-    <div class="form-group">
-      {% csrf_token %}
-      {{ form }}
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-
-  </form>
-
-    </div>
-
+    <form method="post" novalidate>
+      <div class="form-group">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
 
 {% endblock %}

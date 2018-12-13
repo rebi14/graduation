@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>ITU Attendance</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>ITU Attendance</title>
   </head>
   <body>
     <div class="container my-4">
@@ -12,11 +13,11 @@
         <div class="col-md-10 col-sm-12">
           <div class="row">
             <div class="col-6">
-              <a href="{% url 'index' %}"> <h1>ITU Attendance Application</h1> </a>
+              <a href="{% url 'index' %}" style="color: black"> <h1>ITU Attendance Application</h1> </a>
             </div>
             <div class="col-6 text-right">
               {% if user.is_authenticated %}
-                <p class="pt-3">Logged in as <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}" class="btn btn-danger" role="button">Log out</a></p>
+                <p class="pt-3">Welcome <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}" class="btn btn-danger" role="button">Log out</a></p>
               {% else %}
                 <a href="{% url 'login' %}" class="btn btn-light" role="button">Log in</a>
                 <a href="{% url 'signup' %}" class="btn btn-primary" role="button">Sign up</a>
@@ -36,15 +37,37 @@
     <div class="container">
       <div>
         {%  if user.is_student %}
-          <h3>Logged as a Student</h3>
+          <h3>Logged in as a Student</h3>
           <a href="{% url 'all-lectures' %}" class="btn btn-info" role="button">All courses</a>
           <a href="{% url 'student-lecture' %}" class="btn btn-info" role="button">Enrolled Course</a>
           <a href="{% url 'lecture-enrolment' %}" class="btn btn-info" role="button">Enrolment</a>
+          <a href="{% url 'upload-photo' %}" class="btn btn-info" role="button">Photo Upload</a>
+
+
           {% block all_lecture %}{% endblock %}
           <br>
-          {% block student_course %} {% endblock %}
+          {% block student_course %}{% endblock %}
           <br>
           {% block lectureEnrolment %}{% endblock %}
+          <br>
+          {% block model_form %}{% endblock %}
+
+
+        {% endif %}
+        {% if user.is_teacher %}
+          <h3>Logged in as a Teacher</h3>
+          <a href="{% url 'all-lectures2' %}" class="btn btn-info" role="button">All courses</a>
+          <a href="{% url 'teacher-lecture' %}" class="btn btn-info" role="button">My Lectures</a>
+          <a href="{% url 'create-lecture' %}" class="btn btn-info" role="button">Create Lecture</a>
+          <br><br>
+
+          {% block all_lecture2 %}{% endblock %}
+          {% block create_lecture %} {% endblock %}
+          {% block teacher_lectures %} {% endblock %}
+          {% block lecture_students %} {% endblock %}
+          {% block class_photo_upload %} {% endblock %}
+          {% block attendance %} {% endblock %}
+          {% block attendance_update %} {% endblock %}
 
         {% endif %}
       </div>

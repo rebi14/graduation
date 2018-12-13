@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
-from student.models import MyUser, Student, Teacher, Lecture, StudentCourse
+from student.models import MyUser, Student, Teacher, Lecture, StudentCourse, StudentPhoto, ClassPhoto
 from django.forms import ModelForm
 from django.forms import *
 
@@ -48,7 +48,7 @@ class EnrollLectureForm(ModelForm):
     class Meta:
 
         model = StudentCourse
-        fields = ('lecture_table', )
+        fields = ('lecture_table',)
         labels = {
             'lecture_table': 'Lecture CRN  ',
         }
@@ -58,3 +58,44 @@ class EnrollLectureForm(ModelForm):
         widgets = {
             'lecture_table': Select(attrs={'class': 'form-control'})
             }
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['lecture_table'].queryset = StudentCourse.objects.none()
+
+
+class CreateLectureForm(ModelForm):
+
+    class Meta:
+        model = Lecture
+        exclude = ('teacher_no',)
+        labels = {
+            'course_id': 'Course Code',
+            'lecture_crn': 'Lecture CRN  ',
+            'lecture_day': 'Lecture Day',
+            'teacher_no': 'Course Teacher',
+
+        }
+        help_texts = {
+            'lecture_crn': '',
+        }
+        widgets = {
+            'course_id': Select(attrs={'class': 'form-control'}),
+            'lecture_crn': TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter CRN'}),
+            'lecture_day': Select(attrs={'class': 'form-control'}),
+            'teacher_no': Select(attrs={'class': 'form-control'}),
+            'start_time': DateTimeInput(attrs={'class': 'form-control'}),
+            'end_time': DateTimeInput(attrs={'class': 'form-control'})
+        }
+
+
+class StudentPhotoForm(ModelForm):
+    class Meta:
+        model = StudentPhoto
+        fields = ('document', )
+
+
+class ClassPhotoForm(ModelForm):
+    class Meta:
+        model = ClassPhoto
+        fields = ('document', )

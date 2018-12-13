@@ -1,0 +1,29 @@
+{% extends 'base_generic.html' %}
+
+{% block teacher_lectures %}
+ <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Course Name</th>
+          <th scope="col">CRN</th>
+          <th scope="col">Day</th>
+          <th scope="col">Time</th>
+          <th scope="col">Enrolled</th>
+          <th scope="col"></th>
+          </tr>
+      </thead>
+      <tbody>
+        {% for lec in lecture_list %}
+            <tr>
+              <td>{{ lec.course_id.course_name }}</td>
+              <td>{{ lec.lecture_crn }}</td>
+              <td>{{ lec.lecture_day }}</td>
+              <td>{{ lec.start_time }} - {{ lec.end_time }}</td>
+              <td></td>
+              <td><a href="{{ lec.get_absolute_url }}" class="btn btn-info" role="button">Detail</a></td>
+            </tr>
+        {% endfor %}
+      </tbody>
+ </table>
+
+{% endblock %}
