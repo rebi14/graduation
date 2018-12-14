@@ -14,6 +14,7 @@ from student.models import *
 from django.views import generic
 from django.contrib import messages
 
+from student.face import *
 
 # Create your views here.
 
@@ -210,7 +211,10 @@ class AttendanceView(LoginRequiredMixin, View):
         sinif_listesi = list()
         for i in student_courses:
             sinif_listesi.append(str(i.student_table.student_no))
-        olanlar = ['090120510', '050120478', 'student1']
+
+        olanlar = scanClass("./media/studentPhotos","./media/classPhoto", crn)
+        print("sınıftakiler")
+        print(olanlar)
 
         for i in sinif_listesi:
             if i in olanlar:
